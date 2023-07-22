@@ -8,18 +8,19 @@ const ItineraryItem = ({ itin, onItineraryEdit, onItineraryClick, onItineraryDel
 
   const handleItineraryEdit = (e) => {
     e.stopPropagation();
-    console.log(itin.id)
-    onItineraryEdit(itin.id);
+    console.log(itin._id)
+    onItineraryEdit(itin._id);
   };
 
   const handleDayTrackerClick = () => {
-    onItineraryClick(itin.id);
+    onItineraryClick(itin._id);
   }
 
   const handleItineraryDelete = (e) => {
     e.stopPropagation();
-    console.log(itin.id)
-    onItineraryDelete(itin.id)
+    console.log(itin)
+    console.log(itin._id)
+    onItineraryDelete(itin._id)
   }
 
   return (
