@@ -91,15 +91,18 @@ const App = () => {
 
   const handleSaveNewItinerary = (newItin) => {
     const updatedItins = [...itineraries, newItin]
+    console.log(newItin)
     setItineraries(updatedItins)
     setIsAddingItinerary(false)
 
     addItinerary(newItin)
       .then((addedItinerary) => {
+        newItin._id = addedItinerary._id;
         console.log("Added itinerary: ", addedItinerary);
       })
       .catch((e) => {
         console.e("Error adding new itinerary: ", e.message);
+
         const updatedItins = itineraries.filter((itin) => itin !== newItin)
         setItineraries(updatedItins)
         setIsAddingItinerary(false)

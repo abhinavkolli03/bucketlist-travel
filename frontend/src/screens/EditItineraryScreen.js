@@ -160,6 +160,7 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
 
         const endDateObj = startDateObj.clone().add(durationInDays, "days");
 
+        console.log(itin)
         let newItin;
         if (itin) {
             newItin = {
