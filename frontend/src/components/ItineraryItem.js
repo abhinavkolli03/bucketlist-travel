@@ -1,18 +1,25 @@
 import React from 'react';
 import "../styling/itinerarytab.css"
 import moment from "moment"
-import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faPencilAlt, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const ItineraryItem = ({ itin, onItineraryEdit, onItineraryClick }) => {
+const ItineraryItem = ({ itin, onItineraryEdit, onItineraryClick, onItineraryDelete }) => {
 
   const handleItineraryEdit = (e) => {
     e.stopPropagation();
+    console.log(itin.id)
     onItineraryEdit(itin.id);
   };
 
   const handleDayTrackerClick = () => {
     onItineraryClick(itin.id);
+  }
+
+  const handleItineraryDelete = (e) => {
+    e.stopPropagation();
+    console.log(itin.id)
+    onItineraryDelete(itin.id)
   }
 
   return (
@@ -29,6 +36,9 @@ const ItineraryItem = ({ itin, onItineraryEdit, onItineraryClick }) => {
         <p><b>{itin.duration}</b></p>
         <p>{itin.description}</p>
       </div>
+      <button className="delete-button" onClick={handleItineraryDelete}>
+        <FontAwesomeIcon icon={faTrashCan} />      
+      </button>
     </div>
   );
 };

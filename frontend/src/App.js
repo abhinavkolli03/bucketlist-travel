@@ -6,11 +6,11 @@ import DayTrackerScreen from './screens/DayTrackerScreen';
 import SortDropdown from './components/SortDropdown'
 
 import itinerariesData from './data/itineraries.js';
-import axios from "axios";
+import { addItinerary, getAllItineraries, deleteItinerary, updateItinerary } from "./services/itineraryHandling.js";
 
 const App = () => {
   const [isAddingItinerary, setIsAddingItinerary] = useState(false)
-  const [itineraries, setItineraries] = useState(itinerariesData)
+  const [itineraries, setItineraries] = useState([])
 
   const [editedItinerary, setEditedItinerary] = useState(null)
   const [selectedItinerary, setSelectedItinerary] = useState(null)
@@ -20,9 +20,23 @@ const App = () => {
 
   const [selectedSortOption, setSelectedSortOption] = useState("relevance")
 
+  //retrieve initial itineraries data from db
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const itinerariesData = await getAllItineraries();
+        setItineraries(itinerariesData);
+      } catch (e) {
+        console.error("Error while retrieving all itineraries: ", e.message);
+      }
+    }
+
+    fetchData()
+  }, []);
+
   const handleDayTrackerClick = (itinId) => {
     setIsDayTrackerOpen(true)
-    const findItinerary = itineraries.find((itinerary) => itinerary.id === itinId)
+    const findItinerary = itineraries.find((itinerary) => itinerary._id === itinId)
     setSelectedItinerary(findItinerary)
     console.log(findItinerary)
   }
@@ -37,38 +51,58 @@ const App = () => {
   }
 
   const handleItineraryEdit = (itinId) => {
-    const findItinerary = itineraries.find((itinerary) => itinerary.id === itinId)
+    console.log(itinId)
+    console.log(itineraries)
+    const findItinerary = itineraries.find((itinerary) => itinerary._id === itinId)
     setEditedItinerary(findItinerary)
     setIsEditScreenVisible(true)
     console.log("Itinerary clicked:", itinId)
   }
 
+  const handleItineraryDelete = (itinId) => {
+    console.log(itinId)
+    deleteItinerary(itinId)
+    .then((deletedItinerary) => {
+        setItineraries((prevItineraries) =>
+          prevItineraries.filter((itin) => itin._id !== deletedItinerary._id)
+        );
+        console.log("Deleted itinerary: ", deletedItinerary);
+      })
+      .catch((e) => {
+        console.error("Error deleting itinerary: ", e.message);
+      });
+  }
+
   const handleSavedItinerary = (updatedItin) => {
-    const updatedItins = itineraries.map((itin) =>
-      itin.id === updatedItin.id ? updatedItin : itin
-    );
-    setItineraries(updatedItins)
-    setIsEditScreenVisible(false)
-    console.log("Updated itinerary:", updatedItin)
+    updateItinerary(updatedItin)
+      .then((updatedItinerary) => {
+        const updatedItins = itineraries.map((itin) => 
+          itin._id === updatedItin._id ? updatedItinerary : itin
+        )
+        setItineraries(updatedItins)
+        setIsEditScreenVisible(false);
+        console.log("Updated itinerary: ", updatedItinerary)
+      })
+      .catch((e) => {
+        console.error("Error when updating the itinerary: ", e.message);
+      })
   }
 
   const handleSaveNewItinerary = (newItin) => {
     const updatedItins = [...itineraries, newItin]
     setItineraries(updatedItins)
-
     setIsAddingItinerary(false)
-    const newItinerary = {
-      title: newItin.title,
-      image: newItin.image,
-      location: newItin.location,
-      startDate: newItin.startDate,
-      endDate:  newItin.endDate,
-      duration: newItin.duration,
-      description: newItin.description,
-      thoughtBubble: newItin.thoughtBubble,
-    }
 
-    axios.post('http://localhost:3001/add', newItinerary)
+    addItinerary(newItin)
+      .then((addedItinerary) => {
+        console.log("Added itinerary: ", addedItinerary);
+      })
+      .catch((e) => {
+        console.e("Error adding new itinerary: ", e.message);
+        const updatedItins = itineraries.filter((itin) => itin !== newItin)
+        setItineraries(updatedItins)
+        setIsAddingItinerary(false)
+      });
   }
 
   const handleCloseEditScreen = () => {
@@ -106,6 +140,7 @@ const App = () => {
   const name = 'Abhinav Kolli';
 
   const sortedVals = sortItineraries(itineraries, selectedSortOption);
+  console.log(sortedVals)
 
   const handleSaveOrder = (updatedItinerary) => {
     setSelectedItinerary(updatedItinerary)
@@ -151,9 +186,10 @@ const App = () => {
           </div>
         </div>
         {sortedVals.map((itin) => (
-          <ItineraryItem key={itin.id} itin={itin} 
+          <ItineraryItem key={itin._id} itin={itin} 
           onItineraryEdit={handleItineraryEdit}
-          onItineraryClick={handleDayTrackerClick} />
+          onItineraryClick={handleDayTrackerClick}
+          onItineraryDelete={handleItineraryDelete} />
         ))}
       </div>
       {isEditScreenVisible && (
@@ -170,7 +206,6 @@ const App = () => {
           onClosingEdit={handleCloseEditScreen}
         />
       )}
-      {console.log(isDayTrackerOpen)}
       {isDayTrackerOpen && (
         <DayTrackerScreen 
           itin={selectedItinerary}
