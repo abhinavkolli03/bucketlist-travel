@@ -6,6 +6,7 @@ import DayTrackerScreen from './screens/DayTrackerScreen';
 import SortDropdown from './components/SortDropdown'
 
 import itinerariesData from './data/itineraries.js';
+import axios from "axios";
 
 const App = () => {
   const [isAddingItinerary, setIsAddingItinerary] = useState(false)
@@ -54,7 +55,20 @@ const App = () => {
   const handleSaveNewItinerary = (newItin) => {
     const updatedItins = [...itineraries, newItin]
     setItineraries(updatedItins)
+
     setIsAddingItinerary(false)
+    const newItinerary = {
+      title: newItin.title,
+      image: newItin.image,
+      location: newItin.location,
+      startDate: newItin.startDate,
+      endDate:  newItin.endDate,
+      duration: newItin.duration,
+      description: newItin.description,
+      thoughtBubble: newItin.thoughtBubble,
+    }
+
+    axios.post('http://localhost:3001/add', newItinerary)
   }
 
   const handleCloseEditScreen = () => {

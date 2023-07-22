@@ -1,0 +1,27 @@
+{
+  "name": "bucketlist",
+  "version": "1.0.0",
+  "description": "Bucketlist makes creating and sharing travel itineraries easier | Developers: Anish, Matthew, and Abhinav",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "nodemon backend/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abhinavkolli03/bucketlist-travel.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/abhinavkolli03/bucketlist-travel/issues"
+  },
+  "homepage": "https://github.com/abhinavkolli03/bucketlist-travel#readme",
+  "dependencies": {
+    "axios": "^1.4.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "mongodb": "^5.7.0",
+    "mongoose": "^7.4.0"
+  }
+}
