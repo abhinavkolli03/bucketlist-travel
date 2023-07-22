@@ -1,0 +1,142 @@
+/* edit itinerary screen css styles (sad attempt)*/
+.edit-itin-screen {
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.edit-itin-header {
+    width: 80%;
+    height: 20vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit-itin-screen-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 500px;
+    margin-top: -20px;
+    overflow-y: auto;
+    max-height: 400px;
+}
+
+.edit-itin-screen-image {
+    width: 80%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.edit-itin-screen-input,
+.edit-itin-screen-textarea {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.edit-itin-screen-textarea {
+    resize: vertical;
+    max-width: 100%;
+}
+
+.edit-itin-screen-button {
+    padding: 8px 16px;
+    margin: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: blue;
+    color: #fff;
+    cursor: pointer;
+}
+
+.edit-itin-footer {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.edit-itin-screen-button:hover {
+    background-color: blue;
+}
+
+.edit-itin-screen-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+    
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.input-container {
+    position: relative;
+}
+
+.input-container .error-message {
+    position: absolute;
+    bottom: 50px;
+    left: 0;
+    font-size: 12px;
+    color: red;
+}
+
+.duration-input-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.duration-value-input {
+    width: 150px;
+    margin-right: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.duration-unit-select {
+    padding-left: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+  
+
+@media (max-width: 768px) {
+    .edit-itin-screen-content {
+    width: 90%;
+    }
+}
+
+@media (max-width: 480px) {
+    .edit-itin-screen-content {
+    width: 95%;
+    }
+}
+
+@media (max-width: 768px) {
+    .edit-itin-header {
+    height: 30vh;
+    }
+}
+
+@media (max-width: 480px) {
+    .edit-itin-header {
+    height: 40vh;
+    }
+}

@@ -1,0 +1,103 @@
+/*itinerary tab styles*/
+  
+.itin-tab-list {
+    display: flex;
+    flex-direction: column;
+}
+  
+.itin-tab-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    background-color: #eaf2f8;
+    cursor: pointer;
+    position: relative;
+}
+
+.itin-tab-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+}
+  
+.itin-tab-content {
+    padding: 40px;
+}
+  
+.itin-tab-content img {
+    width: 33%;
+    object-fit: cover;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+  
+.itin-tab-text {
+    width: 67%;
+    padding: 10px;
+}
+
+.itin-tab-image-container {
+    width: 33%;
+    flex-shrink: 0;
+}
+
+.itin-tab-image {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-radius: 6px;
+}
+
+.itin-tab-content h3 {
+    font-size: 1.5rem;
+}
+  
+.itin-tab-content p {
+    color: #888;
+    margin-bottom: 2px;
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    /*this is for fixing the display to ellipses and expanding later */
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    cursor: pointer;
+}
+
+.edit-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: 2px solid #777;
+    border-radius: 50%;
+    padding: 5px;
+    color: #777;
+    cursor: pointer;
+}
+
+.edit-button:hover {
+    color: #111;
+    border-color: #111;
+}
+
+
+/*to unclamp ellipses*/
+.itin-tab-content p:hover {
+    -webkit-line-clamp: unset;
+}
+  
+@media (max-width: 768px) {
+    .itin-tab-content img {
+    width: 40%;
+    }
+
+    .itin-tab-text {
+    width: 60%;
+    }
+}

@@ -1,0 +1,108 @@
+.draggable-event-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    top: 140px;
+    z-index: 1;
+}
+
+.draggable-event-list-container .dragging {
+    background-color: lightblue; 
+    border: 2px dashed #ccc;
+    opacity: 0.8;
+}
+
+.draggable-event-list-container {
+    max-height: calc(100vh - 100px);
+    max-width: calc(100vh);
+    overflow-y: auto;
+}
+
+.draggable-event-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    background-color: #eaf2f8;
+    cursor: pointer;
+    position: relative;
+}
+
+.draggable-event-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+}
+
+.draggable-event-image-container {
+    width: 33%;
+    flex-shrink: 0;
+}
+
+.draggable-event-image {
+    width: 100%;
+    height: auto;
+    max-height: 200px; 
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.draggable-event-content {
+    width: 67%;
+    padding: 10px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.draggable-event-content h3 {
+    font-size: 1.5rem;
+}
+
+.draggable-event-content p {
+    color: #888;
+    margin-bottom: 2px;
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    cursor: pointer;
+}
+
+.draggable-event-content p:hover {
+    /* to unclamp ellipses on hover */
+    -webkit-line-clamp: unset;
+}
+
+.edit-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: 2px solid #777;
+    border-radius: 50%;
+    padding: 5px;
+    color: #777;
+    cursor: pointer;
+}
+
+.edit-button:hover {
+    color: #111;
+    border-color: #111;
+}
+
+@media (max-width: 768px) {
+    .draggable-event-content img {
+    width: 40%;
+    }
+
+    .draggable-event-text {
+    width: 60%;
+    }
+}

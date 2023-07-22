@@ -1,0 +1,78 @@
+.app {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.tab-list {
+    align-items: center;
+}
+
+.add-itinerary-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    background-color: #4380e8;
+    color: white;
+    font-size: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.5s ease-in-out;
+}
+
+.add-itinerary-expanded {
+    display: flex;
+    white-space: nowrap;
+    overflow: hidden;
+    align-items: center;
+    justify-content: center;
+    width: 160px;
+    height: 60px;
+    background-color: #4380e8;
+    color: white;
+    font-size: 15px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.add-itinerary-expanded:hover {
+    background-color: #3c72d4;
+}
+
+.add-itinerary-expanded:before {
+    content: "+";
+    font-size: 2px;
+    display: inline-block;
+    margin-right: 8px;
+    transition: all 0.3s ease;
+}
+
+.add-itinerary-expanded:hover:before {
+    content: "";
+}
+
+
+.add-itinerary-expanded:hover:after {
+    content: "Create Itinerary";
+    opacity: 1;
+}
+
+.add-itinerary-outer {
+    width: 100%;
+    text-align: center;
+    padding-bottom: 20px;
+}
+
+.add-itinerary-inner {
+    display: inline-block;
+    margin: 0 auto;
+    padding: 3px;
+}
