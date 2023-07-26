@@ -52,9 +52,8 @@ const App = () => {
   }
 
   const handleItineraryEdit = (itinId) => {
-    console.log(itinId)
-    console.log(itineraries)
     const findItinerary = itineraries.find((itinerary) => itinerary._id === itinId)
+    console.log(findItinerary)
     setEditedItinerary(findItinerary)
     setIsEditScreenVisible(true)
     console.log("Itinerary clicked:", itinId)
@@ -101,7 +100,7 @@ const App = () => {
         console.log("Added itinerary: ", addedItinerary);
       })
       .catch((e) => {
-        console.e("Error adding new itinerary: ", e.message);
+        console.error("Error adding new itinerary: ", e.message);
 
         const updatedItins = itineraries.filter((itin) => itin !== newItin)
         setItineraries(updatedItins)

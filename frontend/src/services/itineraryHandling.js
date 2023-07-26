@@ -49,7 +49,8 @@ export async function deleteItinerary(itinId) {
 export async function updateItinerary(updatedItin) {
     try {
         const response = await axios.put(
-            `http://localhost:3001/itineraries/${updatedItin}`);
+            `http://localhost:3001/itineraries/${updatedItin._id}`,
+            updatedItin);
         console.log("Updated Itinerary: ", response.data)
         return response.data;
     } catch (e) {

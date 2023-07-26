@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
+const Day = require('./dayModel')
+const { Schema } = mongoose;
 
-const itinerarySchema = {
+const itinerarySchema = new mongoose.Schema({
     title: String,
     image: String,
     location: String,
@@ -9,7 +11,8 @@ const itinerarySchema = {
     duration: String,
     description: String,
     thoughtBubble: String,
-}
+    days: [{ type: Schema.Types.ObjectId, ref: 'Day' }]
+})
 
 const Itinerary = mongoose.model("Itinerary", itinerarySchema);
 

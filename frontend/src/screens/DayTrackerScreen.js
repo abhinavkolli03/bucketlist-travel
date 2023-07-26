@@ -5,6 +5,7 @@ import '../styling/draggable.css';
 import { FaTimes } from 'react-icons/fa';
 import { FaCalendar } from 'react-icons/fa';
 import styled from 'styled-components';
+import AddEventButton from '../components/AddEventButton';
 
 const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
   const days = Object.keys(itin.days);
@@ -25,6 +26,10 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
   const handleNewDayButtonClick = (day) => {
     setActiveDay(day);
   };
+
+  const handleAddEventButtonClick = () => {
+
+  }
 
   const handleDragEnd = (result) => {
     const { destination, source } = result;
@@ -85,17 +90,18 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
           >
             Overview
           </button>
-          {days.map((day) => (
+          {days.map((day, index) => (
             <button
               key={day}
               className={`day-tracker-button${activeDay === day ? " active" : ""}`}
               onClick={() => handleNewDayButtonClick(day)}
             >
-              Day {day.substring(3)}
+              Day {index + 1}
             </button>
           ))}
         </div>
         <div className={`day-tracker-content ${dayTrackerOpen ? 'open' : ''}`}>
+          <AddEventButton onClick={handleAddEventButtonClick}/>
           <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable droppableId="itinerary">
               {(provided, snapshot) => {
