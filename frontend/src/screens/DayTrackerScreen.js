@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import '../styling/daytracker.css';
 import '../styling/draggable.css';
@@ -6,10 +6,31 @@ import { FaTimes } from 'react-icons/fa';
 import { FaCalendar } from 'react-icons/fa';
 import styled from 'styled-components';
 import AddEventButton from '../components/AddEventButton';
+import { fetchDayDetails } from "../services/eventHandling.js";
+import moment from 'moment';
 
 const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
   const days = Object.keys(itin.days);
   const [activeDay, setActiveDay] = useState(days[0]);
+  const [dates, setDates] = useState([]);
+
+  useEffect(() => {
+    const fetchDayDetailsForItinerary = async () => {
+      try {
+        const days = [];
+        for (const dayId of itin.days) {
+          const dayDetails = await fetchDayDetails(dayId);
+          days.push(dayDetails);
+        }
+        setDates(days);
+      } catch (e) {
+        console.error("Error fetching day details: ", e.message);
+      }
+    }
+    if (itin.days.length > 0) {
+      fetchDayDetailsForItinerary();
+    }
+  }, [itin])
 
   const DragContainer = styled.div`
     border: 1px solid lightgrey;
@@ -101,7 +122,13 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
           ))}
         </div>
         <div className={`day-tracker-content ${dayTrackerOpen ? 'open' : ''}`}>
-          <AddEventButton onClick={handleAddEventButtonClick}/>
+          {console.log(dates)}
+          {activeDay && dates.length > 0 && (
+            <>
+              <h3>{moment(dates[activeDay].date).format("MMMM Do, YYYY")}</h3>
+              <AddEventButton onClick={handleAddEventButtonClick} />
+            </>
+          )}
           <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable droppableId="itinerary">
               {(provided, snapshot) => {

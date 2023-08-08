@@ -4,6 +4,7 @@ const Itinerary = require("../models/itineraryModel");
 const Day = require("../models/dayModel")
 const dayRoutes = require('./dayRoutes')
 const eventRoutes = require('./eventRoutes')
+const moment = require('moment')
 
 //fetch all itineraries
 router.get("/", async (req, res) => {
@@ -30,36 +31,38 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
     try {
         const { title, image, location, startDate, endDate, duration, description, thoughtBubble } = req.body;
+    
+        const startMoment = moment(startDate, 'YYYY-MM-DD');
+        const endMoment = moment(endDate, 'YYYY-MM-DD');
+        const daysCount = endMoment.diff(startMoment, 'days');
+    
+        const days = [];
 
-        //calculate days between startDate and endDate
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-        const daysCount = Math.ceil((end - start) / (1000 * 60 * 60 * 24))
-
-        const days = []
-
-        //populating days array with empty events for each day
-        for (let i = 0; i < daysCount; i++) {
-            const date = new Date(start);
-            date.setDate(date.getDate() + i)
-            // Create a new Day object and save it
-            const newDay = new Day({ date, events: [] });
-            const savedDay = await newDay.save();
-            days.push(savedDay._id)
+        const durationValue = parseInt(duration.split(" ")[0]);
+    
+        if (Array.isArray(req.body.days) && req.body.days.length > 0) {
+            // If days are already present, update their start dates
+            for (const dayId of req.body.days) {
+                await updateDayStartDate(dayId, startMoment.clone().add(days.length, 'days').toDate());
+                days.push(dayId);
+            }
+        } 
+        else {
+            // If days are not present, create new days
+            for (let i = 0; i <= daysCount; i++) {
+                const date = startMoment.clone().add(i, 'days').toDate();
+                const newDay = new Day({ date, events: [] });
+                const savedDay = await newDay.save();
+                days.push(savedDay._id);
+            }
         }
-
-        if (daysCount == 0) {
-            const date = new Date(start);
-            const newDay = new Day({ date, events: [] })
-            const savedDay = await newDay.save()
-            days.push(savedDay._id)
-        }
-
+    
         const newItinerary = new Itinerary({ title, image, location, startDate, endDate, duration, description, thoughtBubble, days });
         const savedItinerary = await newItinerary.save();
-        res.status(200).json(savedItinerary)
+    
+        res.status(200).json(savedItinerary);
     } catch (e) {
-        res.status(500).json({ message: e.message })
+        res.status(500).json({ message: e.message });
     }
 })
 

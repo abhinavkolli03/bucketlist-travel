@@ -33,4 +33,4 @@ const dayRoutes = require("./routes/dayRoutes")
 
 app.use("/itineraries", itineraryRoutes)
 // app.use("/events", eventRoutes)
-// app.use("/days", dayRoutes)
+app.use("/days", dayRoutes)

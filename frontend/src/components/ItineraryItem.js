@@ -45,8 +45,7 @@ const ItineraryItem = ({ itin, onItineraryEdit, onItineraryClick, onItineraryDel
 };
 
 const formatDate = (date) => {
-  const utcOffsetMinutes = moment().utcOffset();
-  const adjustedDate = moment(date).utcOffset(utcOffsetMinutes).format("MMMM Do, YYYY");
+  const adjustedDate = moment(date).format("MMMM Do, YYYY");
   return adjustedDate;
 }
 

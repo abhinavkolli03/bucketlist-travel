@@ -156,9 +156,20 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
 
         const durationInDays = durationValue * getUnitMultiplier(durationUnit);
 
-        const startDateObj = moment(startDate, "YYYY-MM-DD");
+        console.log(durationInDays)
+        
+        const startDateObj = moment(startDate, "YYYY-MM-DD").startOf("day");
 
-        const endDateObj = startDateObj.clone().add(durationInDays, "days");
+        console.log(startDateObj)
+
+        let endDateObj = startDateObj.clone().add(durationInDays - 1, "days")
+
+        if (durationUnit === "Hours") {
+            endDateObj = startDateObj.clone().add(durationInDays, "days")
+        }
+
+        console.log(endDateObj)
+
 
         console.log(itin)
         let newItin;
@@ -186,7 +197,7 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
             };
         }
 
-        console.log(newItin.image)
+        console.log(newItin)
 
         onSavingItin(newItin)
         onClosingEdit()
@@ -245,16 +256,17 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
     
     const getUnitMultiplier = (unit) => {
         switch (unit) {
-        case "Hours":
-            return 1 / 24;
-        case "Days":
-            return 1;
-        case "Weeks":
-            return 7;
-        default:
-            return 0;
+            case "Hours":
+                return 1 / 24; 
+            case "Days":
+                return 1;
+            case "Weeks":
+                return 7;
+            default:
+                return 0;
         }
     };
+    
 
     const handleDescriptionChange = (e) => {
         const value = e.target.value;
