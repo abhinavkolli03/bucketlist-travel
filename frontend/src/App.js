@@ -89,6 +89,7 @@ const App = () => {
   }
 
   const handleSaveNewItinerary = (newItin) => {
+    console.log('hello')
     const updatedItins = [...itineraries, newItin]
     console.log(newItin)
     setItineraries(updatedItins)
@@ -159,18 +160,17 @@ const App = () => {
   }, [isDayTrackerOpen]);
 
   return (
-    <div className="app">
-      <div className="header">
+    <div className="app bg-lime-100 text-emerald-800 font-poppins" style={{ minHeight: '100vh' }}>
+      <div className="header bg-green-500 p-4 text-xl rounded-lg">
         <h1>Bucket List</h1>
       </div>
       <div className="header">
-        <h1>Welcome back, {name}</h1>
-        <p>Let's finish working on your Paris trip.</p>
+        <h1 className="text-lg font-medium">Welcome back, {name}</h1>
+        <p className="text-sm">Status update: bleh</p>
       </div>
       Sort by: <SortDropdown onSortChange={handleSortChange}/>
-      <div className="tab-list">
-        <div className="add-itinerary-outer">
-          <div className="add-itinerary-inner">
+      <div className="add-itinerary-outer">
+        <div className="add-itinerary-inner">
           {isAddButtonExpanded ? (
             <div className="add-itinerary-expanded"
               onClick={handleAddItinerary}
@@ -186,14 +186,22 @@ const App = () => {
               +
             </div>
           )}
-          </div>
         </div>
-        {sortedVals.map((itin) => (
-          <ItineraryItem key={itin._id} itin={itin} 
-          onItineraryEdit={handleItineraryEdit}
-          onItineraryClick={handleDayTrackerClick}
-          onItineraryDelete={handleItineraryDelete} />
-        ))}
+      </div>
+      <div className="tab-list">
+        {sortedVals.length > 0 ? (
+        sortedVals.map((itin) => (
+            <ItineraryItem
+              key={itin._id}
+              itin={itin}
+              onItineraryEdit={handleItineraryEdit}
+              onItineraryClick={handleDayTrackerClick}
+              onItineraryDelete={handleItineraryDelete}
+            />
+          ))
+        ) : (
+          <h1 className="flex justify-center items-center text-xl font-bold">Where's all the itineraries :/</h1>
+        )}
       </div>
       {isEditScreenVisible && (
         <EditItineraryScreen 

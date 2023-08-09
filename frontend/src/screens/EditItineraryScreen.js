@@ -292,7 +292,7 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
     }
 
     return (
-        <div className="edit-itin-screen">
+        <div className="edit-itin-screen p-6 bg-white rounded-lg shadow-md w-96">
             <div className="edit-itin-header">
                 <img className="edit-itin-screen-image"
                     src={itin && itin.image ? require("../test-images/" + itin.image) : placeholderImage}
@@ -373,11 +373,11 @@ const EditItineraryScreen = ({ itin, onSavingItin, onClosingEdit }) => {
                     placeholder="Thought Bubble"
                 />
             </div>            
-            <div className="edit-itin-footer">
-                <button className="edit-itin-screen-button" onClick={handleItinSave}>
+            <div className="edit-itin-footer mt-4 flex justify-end">
+                <button className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded mr-2" onClick={handleItinSave}>
                     Save
                 </button>
-                <button className="edit-itin-screen-button" onClick={handleItinClose}>
+                <button className="bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded" onClick={handleItinClose}>
                     Close
                 </button>
             </div>

@@ -6,6 +6,15 @@ const daySchema = new Schema({
         type: Date,
         required: true,
     },
+    title: {
+        type: String,
+    },
+    locations: {
+        type: [String],
+    },
+    description: {
+        type: String,
+    },
     events: [{ type: Schema.Types.ObjectId, ref: 'Event' }],
 });
 

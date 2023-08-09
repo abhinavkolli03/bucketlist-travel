@@ -49,12 +49,18 @@ router.post("/", async (req, res) => {
         } 
         else {
             // If days are not present, create new days
+            console.log(daysCount)
             for (let i = 0; i <= daysCount; i++) {
                 const date = startMoment.clone().add(i, 'days').toDate();
-                const newDay = new Day({ date, events: [] });
-                const savedDay = await newDay.save();
+                const newDay = new Day({ date: date, events: [], title: "", description: "", locations: [] });
+                console.log("new", newDay)
+                const savedDay = await newDay.save()
+                    .catch((error) => {
+                        console.error("Error saving day:", error.message)
+                    })
                 days.push(savedDay._id);
             }
+            console.log(days)
         }
     
         const newItinerary = new Itinerary({ title, image, location, startDate, endDate, duration, description, thoughtBubble, days });
@@ -91,6 +97,15 @@ router.delete("/:id", async (req, res) => {
         //if no itinerary found in itineraries-db
         if (!itinerary) {
             return res.status(404).json({ message: `cannot find itinerary with ID ${id}`});
+        }
+        // Delete associated days
+        for (const dayId of itinerary.days) {
+            const day = await Day.findByIdAndDelete(dayId);
+            if (day) {
+                for (const eventId of day.events) {
+                    await Event.findByIdAndDelete(eventId)
+                }
+            }
         }
         res.status(200).json(itinerary);
     } catch (e) {

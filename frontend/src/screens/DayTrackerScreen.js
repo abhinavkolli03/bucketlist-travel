@@ -2,17 +2,58 @@ import React, { useState, useEffect } from 'react';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import '../styling/daytracker.css';
 import '../styling/draggable.css';
+import '../styling/overlay.css'
 import { FaTimes } from 'react-icons/fa';
 import { FaCalendar } from 'react-icons/fa';
 import styled from 'styled-components';
-import AddEventButton from '../components/AddEventButton';
-import { fetchDayDetails } from "../services/eventHandling.js";
+import { fetchDayDetails, updateDayOverview } from "../services/dayHandling.js";
 import moment from 'moment';
+import OverviewModal from '../components/OverviewModal';
+import AddEventButton from '../components/AddEventButton';
+
+import { TimePicker as MuiTimePicker } from '@mui/lab';
+import TextField from '@mui/material/TextField';
 
 const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
   const days = Object.keys(itin.days);
   const [activeDay, setActiveDay] = useState(days[0]);
   const [dates, setDates] = useState([]);
+  const [overviewModalOpen, setOverviewModalOpen] = useState(false);
+  const [overviewDescription, setOverviewDescription] = useState("");
+  const [overviewLocations, setOverviewLocations] = useState("");
+  const [overviewTitle, setOverviewTitle] = useState("");
+  
+  const initialStartTime = new Date();
+  initialStartTime.setHours(9, 0, 0, 0);
+
+  const initialEndTime = new Date();
+  initialEndTime.setHours(17, 0, 0, 0);
+  
+  const [startTime, setStartTime] = useState(initialStartTime);
+  const [endTime, setEndTime] = useState(initialEndTime);
+
+  const handleStartTimeChange = (newValue) => {
+    setStartTime(newValue);
+  }
+
+  const handleEndTimeChange = (newValue) => {
+    setEndTime(newValue);
+  }
+
+  const Overlay = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); 
+    z-index: 1000; 
+    display: ${props => (props.open ? 'block' : 'none')};
+  `;
+
+  const openOverviewModal = () => {
+    setOverviewModalOpen(true);
+  }
 
   useEffect(() => {
     const fetchDayDetailsForItinerary = async () => {
@@ -23,6 +64,7 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
           days.push(dayDetails);
         }
         setDates(days);
+        console.log(days)
       } catch (e) {
         console.error("Error fetching day details: ", e.message);
       }
@@ -31,6 +73,17 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
       fetchDayDetailsForItinerary();
     }
   }, [itin])
+
+  useEffect(() => {
+    if (activeDay && dates.length > 0) {
+      const activeDayDetails = dates[activeDay];
+      if (activeDayDetails) {
+        setOverviewTitle(activeDayDetails.title);
+        setOverviewLocations(activeDayDetails.locations);
+        setOverviewDescription(activeDayDetails.description);
+      }
+    }
+  }, [activeDay, dates, days]);
 
   const DragContainer = styled.div`
     border: 1px solid lightgrey;
@@ -94,7 +147,35 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
   const eventTabWidth = 100 + "%";
   const eventTabHeight = 10 + "%"; // You can adjust this value as needed
 
-
+  const handleSaveOverview = async (overviewData) => {
+    try {
+      console.log("Received overview data:", overviewData);
+      const activeDayDetails = dates[activeDay];
+      if (activeDayDetails) {
+        await updateDayOverview(activeDayDetails._id, overviewData.title, overviewData.locations, overviewData.description);
+        setDates(prevDates => prevDates.map(day => {
+          if (day._id === activeDayDetails._id) {
+            return {
+              ...day,
+              title: overviewData.title,
+              locations: overviewData.locations,
+              description: overviewData.description
+            };
+          }
+          return day;
+        }));
+        setOverviewDescription(overviewData.description)
+        setOverviewTitle(overviewData.title)
+        setOverviewLocations(overviewData.locations)
+      } else {
+        console.error("Active day details not found.");
+      }
+      console.log(days)
+    } catch (error) {
+      console.error("Error saving overview data: ", error.message)
+    }
+  };
+  
   return (
     <div>
       <div className="day-tracker-screen">
@@ -121,14 +202,36 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
             </button>
           ))}
         </div>
+        <Overlay open={overviewModalOpen}>
+          {overviewModalOpen && (
+            <OverviewModal 
+              currentDescription={overviewDescription}
+              currentLocations={overviewLocations}
+              currentTitle={overviewTitle}
+              onSaveOverview={handleSaveOverview}
+              onClose={() => setOverviewModalOpen(false)} 
+            />
+          )}
+        </Overlay>
         <div className={`day-tracker-content ${dayTrackerOpen ? 'open' : ''}`}>
           {console.log(dates)}
           {activeDay && dates.length > 0 && (
-            <>
-              <h3>{moment(dates[activeDay].date).format("MMMM Do, YYYY")}</h3>
-              <AddEventButton onClick={handleAddEventButtonClick} />
-            </>
+            <div className="w-3/4 mr-10 ml-10">
+              <h3 className="font-semibold text-xl mt-10 mb-10">{moment(dates[activeDay].date).format("MMMM Do, YYYY")}</h3>
+              <div className="flex-col items-start overview-section cursor-pointer hover:bg-green-100 transition duration-300 p-4" onClick={openOverviewModal}>
+                <h3 className="text-xl font-bold text-left mb-4">Day Details</h3>
+                <h3 className="text-base font-semibold text-left">{overviewTitle || "Creative Title"}</h3>
+                <h5 className="text-sm font-semibold text-left">{overviewLocations || "Where we going?"}</h5>
+                <p className="text-gray-600 text-left pt-6">
+                  {overviewDescription || "Woah no overview :("}
+                </p>
+              </div>
+              <div className="flex justify-center">
+                <AddEventButton onClick={handleAddEventButtonClick} />
+              </div>
+            </div>
           )}
+          
           <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable droppableId="itinerary">
               {(provided, snapshot) => {
@@ -215,6 +318,7 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
               }}
             </Droppable>
           </DragDropContext>
+          
         </div>
       </div>
     </div>

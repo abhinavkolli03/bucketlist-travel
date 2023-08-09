@@ -9,6 +9,8 @@
     "@fortawesome/free-regular-svg-icons": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@mui/lab": "^5.0.0-alpha.139",
+    "@mui/material": "^5.14.4",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -21,9 +23,11 @@
     "react-beautiful-dnd": "^13.1.1",
     "react-dom": "^18.2.0",
     "react-icons": "^4.10.1",
+    "react-modal": "^3.16.1",
     "react-scripts": "^5.0.1",
     "react-tag-input": "^6.8.1",
     "styled-components": "^6.0.4",
+    "tailwindcss": "^3.3.3",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

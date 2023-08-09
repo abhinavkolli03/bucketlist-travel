@@ -1,28 +1,13 @@
 import React from "react"
-import styled from 'styled-components'
 import { FaLightbulb } from "react-icons/fa"; 
-
-const StyledAddEventButton = styled.button`
-    padding: 12px 24px;
-    font-size: 16px;
-    font-weight: bold;
-    color: white;
-    background-color: #007bff;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-
-    &:hover {
-        background-color: #0056b3;
-    }
-`;
 
 const AddEventButton = ({ onClick }) => {
     return (
-        <StyledAddEventButton onClick={onClick}>
-            <FaLightbulb style={{fontSize: 12}}/> Add Activity
-        </StyledAddEventButton>
+        <button onClick={onClick}
+        className="flex items-center px-4 py-3 text-lg font-bold text-white bg-blue-500 rounded-lg
+        hover:bg-blue-700 transition duration-300">
+            <><FaLightbulb className="text-base mr-2"/> Add Activity</>
+        </button>
     )
 }
 

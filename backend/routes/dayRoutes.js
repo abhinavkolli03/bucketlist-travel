@@ -40,17 +40,24 @@ router.post("/", async (req, res) => {
     }
 })
 
-//update days
-router.put('/:id/startDate', async (req, res) => {
+// Update day overview
+router.put('/:id', async (req, res) => {
     try {
-        const { startDate } = req.body
         const { id } = req.params
-        // Find the day by ID and update its start date
-        const updatedDay = await Day.findByIdAndUpdate(id, { date: startDate }, { new: true });
+        const { title, locations, description } = req.body;
+
+        console.log(id, title, description, locations)
+        // Find the day by ID and update its overview details
+        const updatedDay = await Day.findByIdAndUpdate(id, { title, locations, description });
+        
+        if (!updatedDay) {
+            return res.status(404).json({ message: `Cannot find day with ID ${id}` });
+        }
         res.status(200).json(updatedDay);
     } catch (e) {
         res.status(500).json({ message: e.message });
     }
-})
+});
+  
 
 module.exports = router;
