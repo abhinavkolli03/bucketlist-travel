@@ -160,8 +160,8 @@ const App = () => {
   }, [isDayTrackerOpen]);
 
   return (
-    <div className="app bg-lime-100 text-emerald-800 font-poppins" style={{ minHeight: '100vh' }}>
-      <div className="header bg-green-500 p-4 text-xl rounded-lg">
+    <div className="app bg-purple-300 text-emerald-800 font-poppins" style={{ minHeight: '100vh' }}>
+      <div className="header bg-purple-200 p-4 text-xl rounded-lg">
         <h1>Bucket List</h1>
       </div>
       <div className="header">

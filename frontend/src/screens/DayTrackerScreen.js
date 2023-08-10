@@ -9,9 +9,10 @@ import styled from 'styled-components';
 import { fetchDayDetails, updateDayOverview } from "../services/dayHandling.js";
 import moment from 'moment';
 import OverviewModal from '../components/OverviewModal';
-import AddEventButton from '../components/AddEventButton';
+import EventModal from '../components/EventModal';
 
 import TimePicker from 'react-time-picker-input';
+import EventSearchBox from '../components/EventSearchBox';
 
 
 const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
@@ -23,8 +24,20 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
   const [overviewLocations, setOverviewLocations] = useState("");
   const [overviewTitle, setOverviewTitle] = useState("");
   
+  const [eventModalOpen, setEventModalOpen] = useState(false);
+
+  const handleOpenEventModal = () => {
+    setEventModalOpen(true);
+  };
+
+  const handleCloseEventModal = () => {
+    setEventModalOpen(false);
+  };
+
   const [startTime, setStartTime] = useState("09:00");
   const [endTime, setEndTime] = useState("17:00");
+
+  const [selectPosition, setSelectPosition] = useState(null)
 
   const handleStartTimeChange = (newTime) => {
     setStartTime(newTime);
@@ -33,6 +46,11 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
   const handleEndTimeChange = (newTime) => {
     setEndTime(newTime);
   }
+
+  const handleSaveEvent = (newEvent) => {
+    // Handle saving the new event to the itinerary
+    console.log("New Event:", newEvent);
+  };
 
   const Overlay = styled.div`
     position: fixed;
@@ -169,7 +187,6 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
       console.error("Error saving overview data: ", error.message)
     }
   };
-  
   return (
     <div>
       <div className="day-tracker-screen">
@@ -179,7 +196,7 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
             <FaTimes />
           </button>
         </div>
-        <div className={`day-tracker-buttons-container mr-10`}>
+        <div className={`day-tracker-buttons-container`}>
           <button
             className={`day-tracker-button${activeDay === "overview" ? " active" : ""}`}
             onClick={() => handleNewDayButtonClick("overview")}
@@ -207,16 +224,29 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
             />
           )}
         </Overlay>
-        <div className={`day-tracker-content ${dayTrackerOpen ? 'open' : ''} flex-col justify-between items-center pl-20 pr-10`}>
+        <Overlay open={eventModalOpen}>
+          {eventModalOpen && (
+            <EventModal
+              selectedLocation={selectPosition} // Pass the selected location
+              onClose={handleCloseEventModal}
+              onSaveEvent={handleSaveEvent}
+            />
+          )}
+        </Overlay>
+        <div
+          className={`day-tracker-content ${dayTrackerOpen ? 'open' : ''} flex-col justify-between items-center pl-20 pr-10`}
+          style={{ marginLeft: 'calc(20% + 1rem)', marginRight: 'calc(10% + 1rem)',
+          overflowY: 'scroll',     // Add this line
+          maxHeight: 'calc(100vh - 200px)',}}
+        >
           {console.log(dates)}
           {activeDay && dates.length > 0 && (
-            <div className="w-3/4">
+            <div className="ml-auto ml-200 mr-10">
               <h3 className="font-semibold text-xl mt-10 mb-10">
                 {moment(dates[activeDay].date).format("MMMM Do, YYYY")}
               </h3>
               <div className="flex-col items-start overview-section cursor-pointer hover:bg-green-100 transition duration-300 p-4" onClick={openOverviewModal}>
-                <h3 className="text-xl font-bold text-left mb-4">Day Details</h3>
-                <h3 className="text-base font-semibold text-left">{overviewTitle || "Creative Title"}</h3>
+                <h3 className="text-xl font-bold text-left mb-4">{overviewTitle || "Creative Title"}</h3>
                 <h5 className="text-sm font-semibold text-left">{overviewLocations || "Where we going?"}</h5>
                 <p className="text-gray-600 text-left pt-6">
                   {overviewDescription || "Woah no overview :("}
@@ -224,120 +254,127 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
               </div>
             </div>
           )}
-
-          <div className="flex items-start space-x-2 mb-10">
+          <div className="flex-start space-x-2 mb-10 mt-10">
             <span className="whitespace-nowrap ml-auto text-xl font-bold">Itinerary</span>
           </div>
-          
-          <div className="flex items-center space-x-2 ml-auto mr-20 hover:bg-green-100 transition duration-300 p-4">
-            <span className="whitespace-nowrap">Start Time:</span>
-            <TimePicker
-              className="opacity-0 cursor-pointer absolute inset-0 w-full h-full rounded-lg"
-              value={startTime}
-              hour12Format={true}
-              onChange={handleStartTimeChange}
+          <div>
+            <EventSearchBox 
+              selectPosition={selectPosition} 
+              setSelectPosition={setSelectPosition} 
+              onOpenEventModal={handleOpenEventModal}
             />
           </div>
-
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <Droppable droppableId="itinerary">
-              {(provided, snapshot) => {
-                return (
-                  <div
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                    className={`draggable-event-list-container ${
-                      snapshot.isDraggingOver ? 'dragging' : ''
-                    }`}
-                    innerRef={provided.innerRef}
-                  >
-                    {Object.values(current_events).map((event, index) => {
+          
+          <>
+            <div className="flex items-center space-x-2 ml-auto mr-10 hover:bg-green-100 transition duration-300 p-4">
+              <span className="whitespace-nowrap">Start Time:</span>
+              <TimePicker
+                className="opacity-0 cursor-pointer absolute inset-0 w-full h-full rounded-lg"
+                value={startTime}
+                hour12Format={true}
+                onChange={handleStartTimeChange}
+              />
+            </div>
+            <DragDropContext onDragEnd={handleDragEnd}>
+              <Droppable droppableId="itinerary">
+                {(provided, snapshot) => {
+                  return (
+                    <div
+                      {...provided.droppableProps}
+                      ref={provided.innerRef}
+                      className={`draggable-event-list-container ${
+                        snapshot.isDraggingOver ? 'dragging' : ''
+                      }`}
+                      innerRef={provided.innerRef}
+                    >
+                      {Object.values(current_events).length === 0 ? (
+                        <h3 className="text-sm text-center mt-6">Kinda empty :/ Let's add some events!</h3>
+                      ) : (Object.values(current_events).map((event, index) => {
                         const {name, keyword, startTime, endTime, description } = event;
                         const keywordColor = keyword === 'Breakfast' || keyword === 'Lunch' || keyword === 'Dinner'
                             ? 'lightgreen' : 'orange';
                         return (
-                            <Draggable
-                                key={event.id}
-                                draggableId={event.id}
-                                index={index}
-                            >
-                                {(provided, snapshot) => {
-                                    return (
-                                        <div style={{width: eventTabWidth, height: eventTabHeight}}>
-                                        <div
-                                            ref={provided.innerRef}
-                                            {...provided.draggableProps}
-                                            {...provided.dragHandleProps}
-                                            className="draggable-event-item"
-                                        >
-                                       
-                                        <div className="draggable-event-content"
-                                         style={{width: eventTabWidth, height: eventTabHeight, backgroundColor: keywordColor}}>
-                                            <h2>{event.name}</h2>
-                                            <h4>{event.keyword}</h4>
-                                            <p>{event.description}</p>
-                                            <div className="event-time">     
-                                                <span className="calendar-icon">   <FaCalendar/></span>
-                                                <span>{startTime} - {endTime}</span>
-                                            </div>
-                                            <div>
-                                                <label>Duration:</label>
-                                                <input
-                                                type="text"
-                                                value={event.duration || ''}
-                                                onChange={(e) => {
-                                                    const newEvents = { ...current_events };
-                                                    newEvents[event.id] = {
-                                                        ...event,
-                                                        duration: e.target.value,
-                                                    };
-                                                    // Update the event duration
-                                                    const newDays = {
-                                                        ...itin.days,
-                                                        [activeDay]: {
-                                                            ...itin.days[activeDay],
-                                                            events: newEvents,
-                                                        },
-                                                        };
-                                                        onSaveOrder({ ...itin, days: newDays });
-                                                    }}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="draggable-event-image-container" style={{backgroundColor: keywordColor}}>
-                                                <img
-                                                    src={event.image ? require("../test-images/" + event.image) : require("../test-images/placeholder.jpg")}
-                                                    alt={event.name}
-                                                    className="draggable-event-image"
-                                            />
-                                        </div>
-                                        </div>
-                                        
-                                        </div>
-                                    );
-                                }}
-                            </Draggable>
+                          <Draggable
+                            key={event.id}
+                            draggableId={event.id}
+                            index={index}
+                          >
+                            {(provided, snapshot) => {
+                              return (
+                                <div style={{width: eventTabWidth, height: eventTabHeight}}>
+                                  <div
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    className="draggable-event-item"
+                                  >
+                                    <div className="draggable-event-content" style={{width: eventTabWidth, height: eventTabHeight, backgroundColor: keywordColor}}>
+                                      <h2>{event.name}</h2>
+                                      <h4>{event.keyword}</h4>
+                                      <p>{event.description}</p>
+                                      <div className="event-time">     
+                                        <span className="calendar-icon"><FaCalendar/></span>
+                                        <span>{startTime} - {endTime}</span>
+                                      </div>
+                                      <div>
+                                        <label>Duration:</label>
+                                        <input
+                                          type="text"
+                                          value={event.duration || ''}
+                                          onChange={(e) => {
+                                            const newEvents = { ...current_events };
+                                            newEvents[event.id] = {
+                                              ...event,
+                                              duration: e.target.value,
+                                            };
+                                            const newDays = {
+                                              ...itin.days,
+                                              [activeDay]: {
+                                                ...itin.days[activeDay],
+                                                events: newEvents,
+                                              },
+                                            };
+                                            onSaveOrder({ ...itin, days: newDays });
+                                          }}
+                                        />
+                                      </div>
+                                    </div>
+                                    <div className="draggable-event-image-container" style={{backgroundColor: keywordColor}}>
+                                      <img
+                                        src={event.image ? require("../test-images/" + event.image) : require("../test-images/placeholder.jpg")}
+                                        alt={event.name}
+                                        className="draggable-event-image"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            }}
+                          </Draggable>
                         );
-                    })}
-                    {provided.placeholder}
-                  </div>
-                );
-              }}
-            </Droppable>
-          </DragDropContext>
-          <div className="flex items-center space-x-2 ml-auto mr-20 hover:bg-green-100 transition duration-300 p-4">
-            <span className="whitespace-nowrap">End Time:</span>
-            <TimePicker
-              className="opacity-0 cursor-pointer absolute inset-0 w-full h-full rounded-lg"
-              value={startTime}
-              hour12Format={true}
-              onChange={handleStartTimeChange}
-            />
-          </div>
+                      })
+                    )}
+                      {provided.placeholder}
+                    </div>
+                  );
+                }}
+              </Droppable>
+            </DragDropContext>
+            <div className="flex items-center space-x-2 ml-auto mr-10 hover:bg-green-100 transition duration-300 p-4">
+              <span className="whitespace-nowrap">End Time:</span>
+              <TimePicker
+                className="opacity-0 cursor-pointer absolute inset-0 w-full h-full rounded-lg"
+                value={endTime}
+                hour12Format={true}
+                onChange={handleEndTimeChange}
+              />
+            </div>
+          </>
         </div>
       </div>
     </div>
   );
+  
 };
 
 export default DayTrackerScreen;

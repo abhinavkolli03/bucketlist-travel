@@ -69,8 +69,8 @@
     justify-content: center;
     text-align: center;
     align-items: center;
-    margin-top:80px;
-    margin-left: 20vh; /* Use vh instead of % */
+    margin-top: 80px;
+    margin-left: 0vh; /* Use vh instead of % */
     width: calc(100%);
     overflow-y: auto;
 }
@@ -95,9 +95,9 @@
   max-height: calc(100% - 120px);
   overflow-y: auto;
   flex-basis: 20%;
-  min-width: 150px;
   max-height: calc(100vh - 70px);
   background-color: #fff;
+  padding-top: 70px;
 }
 
 .day-tracker-content.open {
@@ -107,7 +107,7 @@
 .day-tracker-button {
     font-size: 16px;
     font-weight: bold;
-    padding: 10px 20px;
+    padding: 10px 10px;
     margin-bottom: 10px;
     border: none;
     background-color: transparent;
@@ -136,14 +136,24 @@
 }
 
 @media (max-width: 768px) {
-
+    .day-tracker-content.open {
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        align-items: center;
+        margin-top: 80px;
+        margin-left: 10vh; /* Use vh instead of % */
+        width: calc(100%);
+        overflow-y: auto;
+    }
+    
     .day-tracker-content {
         margin-left: 10vh;
         width: calc(100% - 10vh);
     }
 }
 
-@media (max-width: 12000px) {
+@media (max-width: 1200px) {
     .day-tracker-content {
         margin-left: 15vh;
         width: calc(100% - 15vh);
