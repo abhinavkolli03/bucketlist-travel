@@ -3,7 +3,9 @@
     margin: 0 auto;
     padding: 20px;
 }
-
+body::-webkit-scrollbar{
+    display: none;
+}
 .header {
     text-align: center;
     margin-bottom: 20px;

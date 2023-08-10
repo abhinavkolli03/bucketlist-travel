@@ -68,7 +68,7 @@ const EventSearchBox = (props) => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
-      <div style={{ display: "flex", minWidth: "50vh"}}>
+      <div style={{ display: "flex", minWidth: "40vh"}}>
         <div style={{ flex: 1 }}>
           <OutlinedInput
             style={{ borderRightWidth: "0px", borderRadius: 20, minWidth: "50vh", 
@@ -106,7 +106,7 @@ const EventSearchBox = (props) => {
                         button
                         onClick={() => {
                             setSelectPosition(item);
-                            props.onOpenEventModal(item); // Call the parent component's function
+                            props.onOpenEventModal(item);
                         }}
                         style={{
                             width: "50vh"

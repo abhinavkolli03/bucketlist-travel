@@ -72,7 +72,6 @@
     margin-top: 80px;
     margin-left: 0vh; /* Use vh instead of % */
     width: calc(100%);
-    overflow-y: auto;
 }
 
 .day-tracker-content {
@@ -81,6 +80,7 @@
   text-align: center;
   margin-top: 70px;
   width: 100%; /* Set the width to 100% */
+  overflow-x: hidden; /* Add this line to hide horizontal overflow */
   overflow-y: auto;
 }
 
@@ -100,8 +100,8 @@
   padding-top: 70px;
 }
 
-.day-tracker-content.open {
-    overflow-y: auto; /* Show the vertical scrollbar when dayTrackerOpen is true */
+.day-tracker-buttons-container::-webkit-scrollbar {
+    display: none;
 }
 
 .day-tracker-button {
@@ -144,7 +144,6 @@
         margin-top: 80px;
         margin-left: 10vh; /* Use vh instead of % */
         width: calc(100%);
-        overflow-y: auto;
     }
     
     .day-tracker-content {

@@ -26,7 +26,10 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
   
   const [eventModalOpen, setEventModalOpen] = useState(false);
 
-  const handleOpenEventModal = () => {
+  const [searchPosition, setSearchPosition] = useState("");
+
+  const handleOpenEventModal = (selectedItem) => {
+    setSearchPosition(selectedItem)
     setEventModalOpen(true);
   };
 
@@ -36,8 +39,6 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
 
   const [startTime, setStartTime] = useState("09:00");
   const [endTime, setEndTime] = useState("17:00");
-
-  const [selectPosition, setSelectPosition] = useState(null)
 
   const handleStartTimeChange = (newTime) => {
     setStartTime(newTime);
@@ -227,7 +228,7 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
         <Overlay open={eventModalOpen}>
           {eventModalOpen && (
             <EventModal
-              selectedLocation={selectPosition} // Pass the selected location
+              selectedLocation={searchPosition} // Pass the selected location
               onClose={handleCloseEventModal}
               onSaveEvent={handleSaveEvent}
             />
@@ -241,7 +242,7 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
         >
           {console.log(dates)}
           {activeDay && dates.length > 0 && (
-            <div className="ml-auto ml-200 mr-10">
+            <div style={{width: "100%"}} className="ml-auto ml-200 mr-10 mt-10">
               <h3 className="font-semibold text-xl mt-10 mb-10">
                 {moment(dates[activeDay].date).format("MMMM Do, YYYY")}
               </h3>
@@ -259,8 +260,8 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
           </div>
           <div>
             <EventSearchBox 
-              selectPosition={selectPosition} 
-              setSelectPosition={setSelectPosition} 
+              selectPosition={searchPosition} 
+              setSelectPosition={setSearchPosition} 
               onOpenEventModal={handleOpenEventModal}
             />
           </div>

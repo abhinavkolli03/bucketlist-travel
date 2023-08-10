@@ -188,7 +188,7 @@ const App = () => {
           )}
         </div>
       </div>
-      <div className="tab-list">
+      <div className="tab-list sm:m-5 md:m-15 lg:m-35">
         {sortedVals.length > 0 ? (
         sortedVals.map((itin) => (
             <ItineraryItem
