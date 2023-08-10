@@ -25,6 +25,7 @@
     "moment": "^2.29.4",
     "mongodb": "^5.7.0",
     "mongoose": "^7.4.0",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "react-time-picker": "^6.5.0"
   }
 }

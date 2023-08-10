@@ -11,8 +11,8 @@ import moment from 'moment';
 import OverviewModal from '../components/OverviewModal';
 import AddEventButton from '../components/AddEventButton';
 
-import { TimePicker as MuiTimePicker } from '@mui/lab';
-import TextField from '@mui/material/TextField';
+import TimePicker from 'react-time-picker-input';
+
 
 const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
   const days = Object.keys(itin.days);
@@ -23,21 +23,15 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
   const [overviewLocations, setOverviewLocations] = useState("");
   const [overviewTitle, setOverviewTitle] = useState("");
   
-  const initialStartTime = new Date();
-  initialStartTime.setHours(9, 0, 0, 0);
+  const [startTime, setStartTime] = useState("09:00");
+  const [endTime, setEndTime] = useState("17:00");
 
-  const initialEndTime = new Date();
-  initialEndTime.setHours(17, 0, 0, 0);
-  
-  const [startTime, setStartTime] = useState(initialStartTime);
-  const [endTime, setEndTime] = useState(initialEndTime);
-
-  const handleStartTimeChange = (newValue) => {
-    setStartTime(newValue);
+  const handleStartTimeChange = (newTime) => {
+    setStartTime(newTime);
   }
 
-  const handleEndTimeChange = (newValue) => {
-    setEndTime(newValue);
+  const handleEndTimeChange = (newTime) => {
+    setEndTime(newTime);
   }
 
   const Overlay = styled.div`
@@ -185,7 +179,7 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
             <FaTimes />
           </button>
         </div>
-        <div className={`day-tracker-buttons-container`}>
+        <div className={`day-tracker-buttons-container mr-10`}>
           <button
             className={`day-tracker-button${activeDay === "overview" ? " active" : ""}`}
             onClick={() => handleNewDayButtonClick("overview")}
@@ -213,11 +207,13 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
             />
           )}
         </Overlay>
-        <div className={`day-tracker-content ${dayTrackerOpen ? 'open' : ''}`}>
+        <div className={`day-tracker-content ${dayTrackerOpen ? 'open' : ''} flex-col justify-between items-center pl-20 pr-10`}>
           {console.log(dates)}
           {activeDay && dates.length > 0 && (
-            <div className="w-3/4 mr-10 ml-10">
-              <h3 className="font-semibold text-xl mt-10 mb-10">{moment(dates[activeDay].date).format("MMMM Do, YYYY")}</h3>
+            <div className="w-3/4">
+              <h3 className="font-semibold text-xl mt-10 mb-10">
+                {moment(dates[activeDay].date).format("MMMM Do, YYYY")}
+              </h3>
               <div className="flex-col items-start overview-section cursor-pointer hover:bg-green-100 transition duration-300 p-4" onClick={openOverviewModal}>
                 <h3 className="text-xl font-bold text-left mb-4">Day Details</h3>
                 <h3 className="text-base font-semibold text-left">{overviewTitle || "Creative Title"}</h3>
@@ -226,12 +222,23 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
                   {overviewDescription || "Woah no overview :("}
                 </p>
               </div>
-              <div className="flex justify-center">
-                <AddEventButton onClick={handleAddEventButtonClick} />
-              </div>
             </div>
           )}
+
+          <div className="flex items-start space-x-2 mb-10">
+            <span className="whitespace-nowrap ml-auto text-xl font-bold">Itinerary</span>
+          </div>
           
+          <div className="flex items-center space-x-2 ml-auto mr-20 hover:bg-green-100 transition duration-300 p-4">
+            <span className="whitespace-nowrap">Start Time:</span>
+            <TimePicker
+              className="opacity-0 cursor-pointer absolute inset-0 w-full h-full rounded-lg"
+              value={startTime}
+              hour12Format={true}
+              onChange={handleStartTimeChange}
+            />
+          </div>
+
           <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable droppableId="itinerary">
               {(provided, snapshot) => {
@@ -318,7 +325,15 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
               }}
             </Droppable>
           </DragDropContext>
-          
+          <div className="flex items-center space-x-2 ml-auto mr-20 hover:bg-green-100 transition duration-300 p-4">
+            <span className="whitespace-nowrap">End Time:</span>
+            <TimePicker
+              className="opacity-0 cursor-pointer absolute inset-0 w-full h-full rounded-lg"
+              value={startTime}
+              hour12Format={true}
+              onChange={handleStartTimeChange}
+            />
+          </div>
         </div>
       </div>
     </div>
