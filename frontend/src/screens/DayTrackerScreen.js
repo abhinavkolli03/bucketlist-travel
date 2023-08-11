@@ -40,6 +40,8 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
   const [startTime, setStartTime] = useState("09:00");
   const [endTime, setEndTime] = useState("17:00");
 
+  const [lastEventTime, setLastEventTime] = useState(startTime)
+
   const handleStartTimeChange = (newTime) => {
     setStartTime(newTime);
   }
@@ -231,6 +233,7 @@ const DayTrackerScreen = ({ itin, onClose, dayTrackerOpen, onSaveOrder }) => {
               selectedLocation={searchPosition} // Pass the selected location
               onClose={handleCloseEventModal}
               onSaveEvent={handleSaveEvent}
+              lastStartTime={lastEventTime}
             />
           )}
         </Overlay>

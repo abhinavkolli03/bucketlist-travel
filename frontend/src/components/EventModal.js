@@ -1,75 +1,46 @@
 import React, { useEffect, useState } from 'react';
-import TimePicker from 'react-time-picker-input';
+import TimePicker from 'rc-time-picker';
+import 'rc-time-picker/assets/index.css'
+import moment from 'moment';
 
-const EventModal = ({ selectedLocation, onClose, onSaveEvent }) => {
+const EventModal = ({ selectedLocation, onClose, onSaveEvent, lastStartTime }) => {
   const [eventName, setEventName] = useState('');
   const [eventLocation, setEventLocation] = useState(selectedLocation.address.road + ", " + 
   selectedLocation.address.city + ", " + 
   selectedLocation.address.state + " " + 
-  selectedLocation.address.postcode)
+  selectedLocation.address.postcode)  
   const [eventDuration, setEventDuration] = useState("1");
-  const [allocatedTime, setAllocatedTime] = useState('');
   const [eventDescription, setEventDescription] = useState('');
   const [thoughtBubble, setThoughtBubble] = useState('');
   
-  const calculateEventDuration = (start, end) => {
+  const [startTime, setStartTime] = useState(moment(lastStartTime, 'HH:mm'));
+
+
+  const [endTime, setEndTime] = useState(moment(lastStartTime, 'HH:mm'));
+
+  const calculateDuration = (start, end) => {
     const [startHour, startMinute] = start.split(':').map(parseFloat);
     const [endHour, endMinute] = end.split(':').map(parseFloat);
-  
+    
     const startTotalMinutes = startHour * 60 + startMinute;
     const endTotalMinutes = endHour * 60 + endMinute;
-  
+    
     const durationMinutes = endTotalMinutes - startTotalMinutes;
-  
+    
     const durationHours = durationMinutes / 60;
-  
     return durationHours; 
-  };
+  }
 
-  const calculateEndTime = (start, duration) => {
-    const durationHours = parseFloat(duration);
-    const [startHour, startMinute] = start.split(':').map(parseFloat);
-  
-    let endHour = startHour + Math.floor(durationHours);
-    let endMinute = startMinute + (durationHours % 1) * 60;
-  
-    if (endMinute >= 60) {
-      endHour += Math.floor(endMinute / 60);
-      endMinute %= 60;
-    }
-  
-    return `${String(endHour).padStart(2, '0')}:${String(endMinute).padStart(2, '0')}`;
-  };
-
-  const [startTime, setStartTime] = useState('09:00');
-  const [endTime, setEndTime] = useState(calculateEndTime(startTime, eventDuration));
+  const handleTimeChanges = (newTime, setTimeFunction) => {
+    console.log(newTime)
+    const formattedTime = moment(newTime, 'HH:mm');
+    setTimeFunction(formattedTime);
+  }
 
   useEffect(() => {
-    setEndTime(calculateEndTime(startTime, eventDuration))
-    setEventDuration(calculateEventDuration(startTime, endTime))
-  }, [eventDuration])
-
-  const handleStartTimeChange = (newTime) => {
-    setStartTime(newTime);
-    const newTimeStr = newTime.getHours() + ':' + newTime.getMinutes();
-    // Calculate and update the end time based on the duration
-    const newEndTime = calculateEndTime(newTimeStr, eventDuration);
-    setEndTime(newEndTime);
-  };  
-
-  const handleDurationChange = (newDuration) => {
-    setEventDuration(newDuration);
-    const newEndTime = calculateEndTime(startTime, newDuration);
-    setEndTime(newEndTime);
-  };
-
-  const handleEndTimeChange = (newTime) => {
-    setEndTime(newTime);
-    // Calculate and update the duration based on the end time
-    const newTimeStr = newTime.getHours() + ':' + newTime.getMinutes();
-    const newDuration = calculateEventDuration(startTime, newTimeStr);
-    setEventDuration(newDuration);
-  };
+    console.log(startTime)
+    console.log(endTime)
+  }, [startTime, endTime])
 
   const handleSave = () => {
     const newEvent = {
@@ -77,8 +48,7 @@ const EventModal = ({ selectedLocation, onClose, onSaveEvent }) => {
       location: eventLocation,
       startTime: startTime,
       endTime: endTime,
-      duration: eventDuration,
-      allocatedTime: allocatedTime,
+      allocatedHours: eventDuration,
       description: eventDescription,
       thoughtBubble: thoughtBubble,
     };
@@ -102,32 +72,33 @@ const EventModal = ({ selectedLocation, onClose, onSaveEvent }) => {
           type="text"
           placeholder="Event Address"
           value={eventLocation}
-          onChange={(e) => setEventDuration(e.target.value)}
+          onChange={(e) => setEventLocation(e.target.value)}
           className="mb-2 p-2 border border-gray-300 rounded w-full"
         />
         <div className="flex mb-2 space-x-4">
-          <div>
-            <label>Start Time:</label>
-            <TimePicker
-              value={startTime}
-              hour12Format={true}
-              onChange={handleStartTimeChange}
-            />
-          </div>
-          <div>
-            <label>End Time:</label>
-            <TimePicker
-              value={endTime}
-              hour12Format={true}
-              onChange={handleEndTimeChange}
-            />
-          </div>
+            <div>
+                <label>Start Time:</label>
+                <TimePicker
+                value={startTime}
+                use12Hours={true}
+                showSecond={false}
+                onChange={(newTime) => handleTimeChanges(newTime, setStartTime)}
+                />
+            </div>
+            <div>
+                <label>End Time:</label>
+                <TimePicker
+                value={endTime}
+                use12Hours={true}
+                showSecond={false}
+                onChange={(newTime) => handleTimeChanges(newTime, setEndTime)}
+                />
+            </div>
         </div>
         <input
           type="text"
-          placeholder="Event Duration (in hours)"
+          placeholder="Allocated Hours"
           value={eventDuration}
-          onChange={(e) => handleDurationChange(e.target.value)}
           className="mb-2 p-2 border border-gray-300 rounded w-full"
         />
         <textarea
